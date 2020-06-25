@@ -708,7 +708,7 @@ def PushImg(FilePath,BotId,ChannelId):
         return 1
     FormData = MultipartEncoderMonitor(RawFormData, lambda e:UploadBar(e,RawFormData.len))
     resp = requests.post(url, data=FormData, headers={'Content-Type': FormData.content_type})
-    print(resp.text)
+    #print(resp.text)
     print('%s Finish.' % PushName)
     
 def main(Path,BotId,ChannelId):
