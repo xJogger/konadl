@@ -1,3 +1,4 @@
+setuptools
 avalon_framework
 beautifulsoup4
 requests_toolbelt
