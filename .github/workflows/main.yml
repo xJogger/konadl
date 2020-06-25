@@ -1,0 +1,27 @@
+name: AutoKonachain
+
+on:
+  push:
+    branches: [ master ]
+  schedule:
+    - cron: 0 22 * * *
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Python
+      run: |
+        sudo apt update && \
+        sudo apt install python3
+      
+    - name: requirements
+      run: |
+        pip3 install -r requirements.txt
+        
+    - name: Run script
+      run: |
+        python3 libkonadl.py ${{ secrets.BOTID }} ${{ secrets.CHANNELID }}
