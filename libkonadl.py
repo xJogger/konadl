@@ -766,7 +766,7 @@ def main(Path,BotId,ChannelId):
         
 if __name__ == '__main__':
     os.mkdir('k')
-    Path = os.path.join(os.getcwd(),'k') + '\\'
+    Path = os.path.join(os.getcwd(),'k') + '/'
     BotId= sys.argv[1]
     ChannelId = sys.argv[2]
     main(Path,BotId,ChannelId)
