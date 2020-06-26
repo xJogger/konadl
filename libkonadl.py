@@ -759,7 +759,11 @@ def main(Path,BotId,ChannelId):
             newName = os.path.join(Path,newName)
             Name = os.path.join(Path,file)
             os.rename(Name,newName)
-    files = os.listdir(Path)
+    files = []
+    rawfiles = os.listdir(Path)
+    for file in rawfiles:
+        if 'Konachan.com_' in file:
+            files.append(file)
     files.sort(key= lambda x:int(x.split('.')[0].split('_')[1]))
     for file in files:
         if 'Konachan.com_' in file:
