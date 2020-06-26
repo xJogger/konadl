@@ -760,8 +760,10 @@ def main(Path,BotId,ChannelId):
             Name = os.path.join(Path,file)
             os.rename(Name,newName)
     files = os.listdir(Path)
+    files.sort(key= lambda x:int(x.split('.')[0].split('_')[1]))
     for file in files:
         if 'Konachan.com_' in file:
+            time.sleep(0.5)
             PushImg(os.path.join(Path,file),BotId,ChannelId)
         
 if __name__ == '__main__':
