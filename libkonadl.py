@@ -710,7 +710,30 @@ def PushImg(FilePath,BotId,ChannelId):
     resp = requests.post(url, data=FormData, headers={'Content-Type': FormData.content_type})
     print(resp.text)
     print('%s Finish.' % PushName)
-    
+
+def PushDoc(FilePath,BotId,ChannelId):
+    PushName =  os.path.split(FilePath)[1].split('.')[1].replace('com_','p')
+    url = 'https://api.telegram.org/bot%s/sendDocument' % BotId
+    RawFormData = MultipartEncoder( 
+    fields={ 
+            'chat_id': '@%s' % ChannelId,
+            'document'  : (os.path.split(FilePath)[1], open(FilePath, 'rb'), 'application/octet-stream'),
+            'caption': PushName
+    } )
+    def UploadBar(monitor,Size):
+        return 1
+    FormData = MultipartEncoderMonitor(RawFormData, lambda e:UploadBar(e,RawFormData.len))
+    resp = requests.post(url, data=FormData, headers={'Content-Type': FormData.content_type})
+    print(resp.text)
+    print('%s Finish.' % PushName)
+
+def PushMsg(Msg,BotId,ChannelId):
+    url = 'https://api.telegram.org/bot%s/sendMessage?chat_id=@%s&text=%s' % (BotId,ChannelId,Msg)
+    resp = requests.get(url)
+    print(resp.text)
+    print('%s Pushed.' % Msg)
+
+
 def main(Path,BotId,ChannelId):
     """ Sample crawling
 
@@ -764,11 +787,18 @@ def main(Path,BotId,ChannelId):
     for file in rawfiles:
         if 'Konachan.com_' in file:
             files.append(file)
-    files.sort(key= lambda x:int(x.split('.')[0].split('_')[1]))
+    files.sort(key= lambda x:int(x.split('.')[1].split('_')[1]))
+
+    CurrentDate = time.strftime("%Y{y}%m{m}%d{d}", time.localtime()).format(y='年', m='月', d='日')
+    PushMsg(CurrentDate,BotId,ChannelId)
     for file in files:
         if 'Konachan.com_' in file:
+	        PicPath = os.path.join(Path,file)
+	        if path.getsize(PicPath)/1024/1024 < 9.9:
+		        PushImg(PicPath,BotId,ChannelId)
+		    else :
+		    	PushDoc(PicPath,BotId,ChannelId)
             time.sleep(0.5)
-            PushImg(os.path.join(Path,file),BotId,ChannelId)
         
 if __name__ == '__main__':
     os.mkdir('k')
