@@ -19,6 +19,7 @@ def getLastPid(ChannelId):
 		txt = Msg.get_text()
 		if re.match(r'p\d+', txt) != None:
 			LastID = txt
+	print(LastID)
 	return LastID
 
 def genConfig(Path,LastID):
@@ -39,6 +40,7 @@ def genConfig(Path,LastID):
 }''' % LastID
 	with open(os.path.join(Path,'metadata.json'),"w") as txtfile:
 		txtfile.write(config)
+	print(Path,'Config Done.')
 
 def PushImg(FilePath,BotId,ChannelId):
 	PushName =  os.path.split(FilePath)[1].split('.')[1].replace('com_','p')
@@ -113,9 +115,11 @@ if __name__ == '__main__':
 	ChannelId = sys.argv[2]
 	LastPid = getLastPid(ChannelId)
 	if LastPid == '0':
+		print(r'python3 konadl_cli.py -o %s -s -n 5' %Path)
 		os.system(r'python3 konadl_cli.py -o %s -s -n 5' %Path)
 	else :
 		genConfig(Path,LastPid)
+		print(r'python3 konadl_cli.py -o %s --update' %Path)
 		os.system(r'python3 konadl_cli.py -o %s --update' %Path)
 	Renamer(Path)
 	Pusher(Path,BotId,ChannelId)
