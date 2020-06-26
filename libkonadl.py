@@ -798,7 +798,7 @@ def main(Path,BotId,ChannelId):
                 PushImg(PicPath,BotId,ChannelId)
             else :
                 PushDoc(PicPath,BotId,ChannelId)
-            time.sleep(0.5)
+            time.sleep(1)
         
 if __name__ == '__main__':
     os.mkdir('k')
