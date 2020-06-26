@@ -115,8 +115,8 @@ if __name__ == '__main__':
 	ChannelId = sys.argv[2]
 	LastPid = getLastPid(ChannelId)
 	if LastPid == '0':
-		print(r'python3 konadl_cli.py -o %s -s -n 5' %Path)
-		os.system(r'python3 konadl_cli.py -o %s -s -n 5' %Path)
+		print(r'python3 konadl_cli.py -o %s -s -n 1' %Path)
+		os.system(r'python3 konadl_cli.py -o %s -s -n 1' %Path)
 	else :
 		genConfig(Path,LastPid)
 		print(r'python3 konadl_cli.py -o %s --update' %Path)
