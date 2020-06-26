@@ -113,8 +113,8 @@ if __name__ == '__main__':
 	Path = os.path.join(os.getcwd(),'pic') + os.sep
 	BotId= sys.argv[1]
 	ChannelId = sys.argv[2]
-	LastPid = getLastPid(ChannelId)
 	'''
+	LastPid = getLastPid(ChannelId)
 	if LastPid == '0':
 		print(r'python3 konadl_cli.py -o %s -s -n 1' %Path)
 		os.system(r'python3 konadl_cli.py -o %s -s -n 1' %Path)
@@ -124,10 +124,7 @@ if __name__ == '__main__':
 		os.system(r'python3 konadl_cli.py -o %s --update' %Path)
 	genConfig(Path,LastPid)
 	'''
-	genConfig(Path,LastPid)
-	print(r'python3 konadl_cli.py -o %s --update' %Path)
-	os.system(r'python3 konadl_cli.py -o %s --update' %Path)
-	
+	os.system(r'python3 konadl_cli.py -o %s -s -n 2' %Path)
 	Renamer(Path)
 	Pusher(Path,BotId,ChannelId)
 	
