@@ -794,7 +794,7 @@ def main(Path,BotId,ChannelId):
     for file in files:
         if 'Konachan.com_' in file:
             PicPath = os.path.join(Path,file)
-            if path.getsize(PicPath)/1024/1024 < 9.9:
+            if os.path.getsize(PicPath)/1024/1024 < 9.9:
                 PushImg(PicPath,BotId,ChannelId)
             else :
                 PushDoc(PicPath,BotId,ChannelId)
