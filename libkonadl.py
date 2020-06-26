@@ -34,7 +34,7 @@ import sys
 import threading
 import time
 import traceback
-from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
+
 
 # Make Queue a new-style class, so it can be used with copy_reg
 class Queue(_Queue, object):
@@ -695,58 +695,19 @@ class Konadl:
         print('Error: Faulty progress file!', file=sys.stderr)
         print('Aborting\n', file=sys.stderr)
 
-def PushImg(FilePath,BotId,ChannelId):
-    PushName =  os.path.split(FilePath)[1].split('.')[1].replace('com_','p')
-    url = 'https://api.telegram.org/bot%s/sendPhoto' % BotId
-    RawFormData = MultipartEncoder( 
-    fields={ 
-            'chat_id': '@%s' % ChannelId,
-            'photo'  : (os.path.split(FilePath)[1], open(FilePath, 'rb'), 'application/octet-stream'),
-            'caption': PushName
-    } )
-    def UploadBar(monitor,Size):
-        return 1
-    FormData = MultipartEncoderMonitor(RawFormData, lambda e:UploadBar(e,RawFormData.len))
-    resp = requests.post(url, data=FormData, headers={'Content-Type': FormData.content_type})
-    print(resp.text)
-    print('%s Finish.' % PushName)
 
-def PushDoc(FilePath,BotId,ChannelId):
-    PushName =  os.path.split(FilePath)[1].split('.')[1].replace('com_','p')
-    url = 'https://api.telegram.org/bot%s/sendDocument' % BotId
-    RawFormData = MultipartEncoder( 
-    fields={ 
-            'chat_id': '@%s' % ChannelId,
-            'document'  : (os.path.split(FilePath)[1], open(FilePath, 'rb'), 'application/octet-stream'),
-            'caption': PushName
-    } )
-    def UploadBar(monitor,Size):
-        return 1
-    FormData = MultipartEncoderMonitor(RawFormData, lambda e:UploadBar(e,RawFormData.len))
-    resp = requests.post(url, data=FormData, headers={'Content-Type': FormData.content_type})
-    print(resp.text)
-    print('%s Finish.' % PushName)
-
-def PushMsg(Msg,BotId,ChannelId):
-    url = 'https://api.telegram.org/bot%s/sendMessage?chat_id=@%s&text=%s' % (BotId,ChannelId,Msg)
-    resp = requests.get(url)
-    print(resp.text)
-    print('%s Pushed.' % Msg)
-
-
-def main(Path,BotId,ChannelId):
+if __name__ == '__main__':
     """ Sample crawling
 
     Crawls safe images off of konachan.com
     when called directly as a standalone program
     for demonstration.
     """
-
     kona = Konadl()  # Create crawler object
 
     # Set storage directory
     # Note that there's a "/" and the end
-    kona.storage = Path
+    kona.storage = '/tmp/konachan/'
     if not os.path.isdir(kona.storage):  # Quit if storage directory not found
         print('Error: storage directory not found', file=sys.stderr)
         exit(1)
@@ -755,14 +716,14 @@ def main(Path,BotId,ChannelId):
     kona.yandere = False
 
     # Download images by ratings
-    kona.safe = True            # Include safe rated images
+    kona.safe = False            # Include safe rated images
     kona.questionable = False   # Include questionable rated images
-    kona.explicit = False       # Include explicit rated images
+    kona.explicit = True       # Include explicit rated images
 
     # Set crawler and downloader threads
     kona.post_crawler_threads_amount = 10
     kona.downloader_threads_amount = 20
-    kona.pages = 2  # Crawl 2 pages
+    kona.pages = 3  # Crawl 3 pages
 
     kona.load_progress = False
     if kona.progress_files_present():
@@ -774,36 +735,3 @@ def main(Path,BotId,ChannelId):
     print('{} image(s) downloaded'.format(kona.total_downloads))
     print('Time taken: {} seconds'.format(
         round((time.time() - kona.begin_time), 5)))
-
-    files = os.listdir(Path)
-    for file in files:
-        if 'Konachan.com_' in file:
-            newName = 'Konachan.com_' + file.split('_')[1] + '.' + file.split('.')[-1]
-            newName = os.path.join(Path,newName)
-            Name = os.path.join(Path,file)
-            os.rename(Name,newName)
-    files = []
-    rawfiles = os.listdir(Path)
-    for file in rawfiles:
-        if 'Konachan.com_' in file:
-            files.append(file)
-    files.sort(key= lambda x:int(x.split('.')[1].split('_')[1]))
-
-    CurrentDate = time.strftime("%Y{y}%m{m}%d{d}", time.localtime()).format(y='年', m='月', d='日')
-    PushMsg(CurrentDate,BotId,ChannelId)
-    time.sleep(4)
-    for file in files:
-        if 'Konachan.com_' in file:
-            PicPath = os.path.join(Path,file)
-            if os.path.getsize(PicPath)/1024/1024 < 9.9:
-                PushImg(PicPath,BotId,ChannelId)
-            else :
-                PushDoc(PicPath,BotId,ChannelId)
-            time.sleep(4)
-        
-if __name__ == '__main__':
-    os.mkdir('k')
-    Path = os.path.join(os.getcwd(),'k') + '/'
-    BotId= sys.argv[1]
-    ChannelId = sys.argv[2]
-    main(Path,BotId,ChannelId)

@@ -18,11 +18,22 @@ jobs:
         sudo apt update && \
         sudo apt install python3
       
-    - name: requirements
+    - name: Install Requirements
       run: |
         pip3 install setuptools
         pip3 install -r requirements.txt
         
-    - name: Run script
+    - name: Run Script
       run: |
-        python3 libkonadl.py ${{ secrets.BOTID }} ${{ secrets.CHANNELID }}
+        python3 TelegramPusher.py ${{ secrets.BOTID }} ${{ secrets.CHANNELID }}
+
+    - name: Run Zip
+      run: |
+        mkdir Konachan
+        zip -j ./Konachan/Konachan-$(date -d +1day +%Y-%m-%d).zip ./pic/
+    
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Konachan
+        path: ./Konachan/
+		
