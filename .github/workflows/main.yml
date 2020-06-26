@@ -30,7 +30,7 @@ jobs:
     - name: Run Zip
       run: |
         mkdir Konachan
-        zip -j ./Konachan/Konachan-$(date -d +1day +%Y-%m-%d).zip ./pic/
+        zip -j ./Konachan/Konachan-$(date -d +1day +%Y-%m-%d).zip ./pic/*
     
     - uses: actions/upload-artifact@v2
       with:
