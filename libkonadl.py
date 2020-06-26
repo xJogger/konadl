@@ -791,6 +791,7 @@ def main(Path,BotId,ChannelId):
 
     CurrentDate = time.strftime("%Y{y}%m{m}%d{d}", time.localtime()).format(y='年', m='月', d='日')
     PushMsg(CurrentDate,BotId,ChannelId)
+    time.sleep(4)
     for file in files:
         if 'Konachan.com_' in file:
             PicPath = os.path.join(Path,file)
@@ -798,7 +799,7 @@ def main(Path,BotId,ChannelId):
                 PushImg(PicPath,BotId,ChannelId)
             else :
                 PushDoc(PicPath,BotId,ChannelId)
-            time.sleep(1)
+            time.sleep(4)
         
 if __name__ == '__main__':
     os.mkdir('k')
