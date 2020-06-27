@@ -159,5 +159,6 @@ if __name__ == '__main__':
 		print('Last Pid is %s in page %s.' % (LastPid,Page))
 		os.system(r'python3 konadl_cli.py -o %s -s -n %s' % (Path,Page) )
 	Renamer(Path)
-	Deleter(Path,LastPid)
+	if LastPid != '0':
+		Deleter(Path,LastPid)
 	Pusher(Path,BotId,ChannelId)
