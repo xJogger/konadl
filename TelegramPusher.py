@@ -8,6 +8,7 @@ import sys
 import time
 import re
 from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
+import json
 
 def getLastPid(ChannelId):
 	url = 'https://t.me/s/%s' % ChannelId
