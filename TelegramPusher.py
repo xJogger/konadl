@@ -42,6 +42,33 @@ def genConfig(Path,LastID):
 		txtfile.write(config)
 	print(Path,'Config Done.')
 
+
+def getPids(Page):
+	url = 'https://konachan.net/post?page=%s' % Page
+	resp = requests.get(url)
+	Soup = BeautifulSoup(resp.text,features="html.parser")
+	html = Soup.find("script", string=re.compile(r"Post.register_tags"))
+	rawLines = str(html).replace(r'</script>','').replace(r'<script type="text/javascript">','').splitlines()
+	pids = []
+	for line in rawLines:
+		if ('register_tags' not in line) and ('register' in line):
+			rawjson = line.replace('Post.register(','')[:-1]
+			pid = json.loads(rawjson)['id']
+			pids.append(pid)
+	return pids
+
+
+def getPidPage(pid):
+	isFindPage = False
+	Page = 1
+	while not isFindPage :
+		pids = getPids(str(Page))
+		if pid in pids:
+			isFindPage = True
+		else:
+			Page = Page + 1
+	return str(Page)
+
 def PushImg(FilePath,BotId,ChannelId):
 	PushName =  os.path.split(FilePath)[1].split('.')[1].replace('com_','p')
 	url = 'https://api.telegram.org/bot%s/sendPhoto' % BotId
@@ -89,6 +116,15 @@ def Renamer(Path):
 			Name = os.path.join(Path,file)
 			os.rename(Name,newName)
 
+def Deleter(Path,LastPid):
+	files = os.listdir(Path)
+	LastPid = int(LastPid[1:])
+	for file in files:
+		if 'Konachan.com_' in file:
+			pid = int(file.split('.')[1].split('_')[1])
+			if pid <= LastPid:
+				os.remove(os.path.join(Path,file))
+
 def Pusher(Path,BotId,ChannelId):
 	files = []
 	rawfiles = os.listdir(Path)
@@ -113,18 +149,14 @@ if __name__ == '__main__':
 	Path = os.path.join(os.getcwd(),'pic') + os.sep
 	BotId= sys.argv[1]
 	ChannelId = sys.argv[2]
-	'''
 	LastPid = getLastPid(ChannelId)
 	if LastPid == '0':
-		print(r'python3 konadl_cli.py -o %s -s -n 1' %Path)
+		print('First run, download 1 page.')
 		os.system(r'python3 konadl_cli.py -o %s -s -n 1' %Path)
 	else :
-		genConfig(Path,LastPid)
-		print(r'python3 konadl_cli.py -o %s --update' %Path)
-		os.system(r'python3 konadl_cli.py -o %s --update' %Path)
-	genConfig(Path,LastPid)
-	'''
-	os.system(r'python3 konadl_cli.py -o %s -s -n 2' %Path)
+		Page = getPidPage(int(LastPid[1:]))
+		print('Last Pid is %s in page %s.' % (LastPid,Page))
+		os.system(r'python3 konadl_cli.py -o %s -s -n %s' % (Path,Page) )
 	Renamer(Path)
+	Deleter(Path,LastPid)
 	Pusher(Path,BotId,ChannelId)
-	

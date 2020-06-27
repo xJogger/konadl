@@ -27,10 +27,11 @@ jobs:
       run: |
         python3 TelegramPusher.py ${{ secrets.BOTID }} ${{ secrets.CHANNELID }}
 
-    - name: Run Zip
+    - name: Move Files
       run: |
         mkdir Konachan
-        zip -j ./Konachan/Konachan-$(date -d +1day +%Y-%m-%d).zip ./pic/*
+        mkdir ./Konachan/Konachan-$(date -d +1day +%Y-%m-%d)/
+        mv ./pic/* ./Konachan/Konachan-$(date -d +1day +%Y-%m-%d)/
     
     - uses: actions/upload-artifact@v2
       with:
