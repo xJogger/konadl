@@ -152,8 +152,8 @@ if __name__ == '__main__':
 	ChannelId = sys.argv[2]
 	LastPid = getLastPid(ChannelId)
 	if LastPid == '0':
-		print('First run, download 1 page.')
-		os.system(r'python3 konadl_cli.py -o %s -s -n 1' %Path)
+		print('First run, download 5 page.')
+		os.system(r'python3 konadl_cli.py -o %s -s -n 5' %Path)
 	else :
 		Page = getPidPage(int(LastPid[1:]))
 		print('Last Pid is %s in page %s.' % (LastPid,Page))
