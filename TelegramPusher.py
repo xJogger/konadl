@@ -126,6 +126,12 @@ def Deleter(Path,LastPid):
 			if pid <= LastPid:
 				os.remove(os.path.join(Path,file))
 
+def getTime(tz):
+	from datetime import datetime,timedelta,timezone
+	date = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(timezone(timedelta(hours=tz))).strftime('%Y{y}%m{m}%d{d}').format(y='年', m='月', d='日')
+	time = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(timezone(timedelta(hours=tz))).strftime('%H:%M:%S')
+	return [date,time]
+
 def Pusher(Path,BotId,ChannelId):
 	files = []
 	rawfiles = os.listdir(Path)
@@ -133,7 +139,8 @@ def Pusher(Path,BotId,ChannelId):
 		if 'Konachan.com_' in file:
 			files.append(file)
 	files.sort(key= lambda x:int(x.split('.')[1].split('_')[1]))
-	CurrentDate = time.strftime("%Y{y}%m{m}%d{d}", time.localtime()).format(y='年', m='月', d='日')
+	CurrentDate = getTime(8)[0]
+	print('Push time is',CurrentDate,getTime(8)[1])
 	PushMsg(CurrentDate,BotId,ChannelId)
 	time.sleep(4)
 	for file in files:
