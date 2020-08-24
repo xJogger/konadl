@@ -64,7 +64,7 @@ def getPidPage(pid):
     Page = 1
     while not isFindPage :
         pids = getPids(str(Page))
-        if page <= 20:
+        if Page <= 20:
             if pid in pids:
                 isFindPage = True
             else:
