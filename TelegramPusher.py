@@ -64,11 +64,17 @@ def getPidPage(pid):
     Page = 1
     while not isFindPage :
         pids = getPids(str(Page))
-        for i in pids:
-            if i <= pid:
+        if page <= 20:
+            if pid in pids:
                 isFindPage = True
             else:
                 Page = Page + 1
+        else:        
+            for i in pids:
+                if i <= pid:
+                    isFindPage = True
+                else:
+                    Page = Page + 1
     return str(Page)
 
 def PushImg(FilePath,BotId,ChannelId):
